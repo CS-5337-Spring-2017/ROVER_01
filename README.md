@@ -22,13 +22,16 @@ There are a few RestFul API's that use HTTP requests to GET, PUT, POST and DELET
 
 **[GET]** [/api/global/test](/api/global/test)
 
-`[{"x":1,"y":2,"terrain":"GRAVEL","science":"CRYSTAL"},{"x":3,"y":4,"terrain":"SAND","science":"ORGANIC"},{"x":5,"y":6,"terrain":"SOIL","science":"MINERAL"},{"x":7,"y":8,"terrain":"ROCK","science":"RADIOACTIVE"},{"x":9,"y":10,"terrain":"NONE","science":"NONE"}]`
+```
+[{"x":1,"y":2,"terrain":"GRAVEL","science":"CRYSTAL"},{"x":3,"y":4,"terrain":"SAND","science":"ORGANIC"},{"x":5,"y":6,"terrain":"SOIL","science":"MINERAL"},{"x":7,"y":8,"terrain":"ROCK","science":"RADIOACTIVE"},{"x":9,"y":10,"terrain":"NONE","science":"NONE"}]
 
+```
 ### **Sciences**
 
 **[GET]** [/api/science/all](/api/science/all)
 
-`[
+```
+[
   {
     "x": 19,
     "y": 47,
@@ -37,22 +40,25 @@ There are a few RestFul API's that use HTTP requests to GET, PUT, POST and DELET
     "f": 13,  // found by rover 13
     "g": 18   // marked by rover 18 for gather
   } ...
-]`
+]
 
+```
 ### **Gather**
 
 **[POST]** [/api/gather/x/y](/api/gather/x/y)
 
 example: /api/coord/82/18
 
-`{
+```
+{
   "x": 85,
   "y": 18,
   "science": "MINERAL",
   "terrain": "GRAVEL"
   "f": 17 // found by rover 17
-}`
+}
 
+```
 
 **[POST]** [/api/coord/:x/:y/:science](/api/coord/:x/:y/:science)
 
@@ -64,25 +70,29 @@ POST: /api/coord/30/40/DIAMOND
 ```
 Now the coordinate looks like:
 
-`{
+```
+{
   "x": 30,
   "y": 40,
   "science": "DIAMOND",  // now updated to DIAMOND. (but should only use: NONE, CRYSTAL, ORGANIC, RADIOACTIVE, MINERAL)
   "terrain": "SOIL"
   "f": 14                // updated by rover 14
-}`
-
+}
+```
 ### **Misc**
 
 **[GET]** [/api/rover/info](/api/rover/info)
 
-`{"ROVER_01":{"id":1,"sensor":"CRYSTAL","tool":"EXCAVATE","drive":"TREADS"}}`
+```
+{"ROVER_01":{"id":1,"sensor":"CRYSTAL","tool":"EXCAVATE","drive":"TREADS"}}
 
+```
 This class is the interface to the SwarmCommunicationServer nodejs or javscript program. It opens an HTTP Connection with the java class HttpURLConnection and sens a GET or POST request to the server in accordance with the server API
 
 **[POST]** [/api/global](/api/global)
 
-`[
+```
+[
   {
     "x":12,                 // coordinates must be Integers, not String
     "y":14,                 // ALL CAPS as in enums folder
@@ -91,6 +101,7 @@ This class is the interface to the SwarmCommunicationServer nodejs or javscript 
     "f": 12                 // Found by Rover 12 (for debugging)
     "g": 15                 // Marked by Rover 15 for gathering
   }, ...
-]`
+]
 
+```
 
