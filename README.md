@@ -7,12 +7,6 @@ Spring 2017 <br/>
 Computer Science Department <br/>
 California State University, Los Angeles
 
-**Team Members:** <br/>
-Sevak Mnatsakanyan<br/>
-Somparb Tee<br/>
-B Trilok G Nath<br/>
-Nanditha Raja<br/>
-
 **Description:** <br/>
 Communication Server acts as a source of mediator between the Server and the Rovers, constantly transferring the required informaiton to the Rovers regarding the co-ordinates, locations of science on the map, messages and etc. All communications betwee the server and the rover are text based i.e., a series of Strings are shared between the Rover and the Communication Server in order to establish a successful connection between them. For the Communication Server to successfully communicate with the Rovers we need an API (Application Program Interface) to do that. We use these API's with a set of commands. 
 
