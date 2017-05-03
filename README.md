@@ -11,15 +11,14 @@ below here are minimum list of software that require to run this project
 * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) - version control system, git provides easy way to clone the project
 * This project requires at least JDK 1.8.0_77
 
-### Project Structure
-This project is currently arraigned as below
+## Major Classes
+Major classes of this project are list here.
 
-| Package | Source |
+| Package | Description |
 | ------ | ------ |
-| common | [src/common](src/common)<br>test |
-| controlServer | [plugins/github/README.md](src/common/) |
-| enums | [plugins/googledrive/README.md] [PlGd] |
-| json | [plugins/onedrive/README.md] [PlOd] |
-| rover_logic | [plugins/medium/README.md] [PlMe] |
-| supportTools | [plugins/googleanalytics/README.md] [PlGa] |
-| swarmBots | [plugins/googleanalytics/README.md] [PlGa] |
+| [common](src/common) | common classes for object such as Rover, Map, Science etc.<br>restful API interface for communication with server |
+| [controlServer](src/controlServer) | class for control UI display also Rover behavior |
+| [enums](src/enums) | enums classes for constant such as Science type, Terrain type etc. |
+| [json](src/json) | classes for JSON data conversion for communication with server |
+| [rover_logic](src/rover_logic) | classes for various rover algorithms |
+| [swarmBots](src/swarmBots) | classes for each Rover instance|
