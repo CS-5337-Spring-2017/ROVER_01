@@ -17,8 +17,18 @@ Major classes of this project are list here.
 | Package | Description |
 | ------ | ------ |
 | [common](src/common) | common classes for object such as Rover, Map, Science etc.<br>restful API interface for communication with server |
-| [controlServer](src/controlServer) | class for control UI display also Rover behavior |
+| [controlServer](src/controlServer) | class for control UI display and Rover behavior |
 | [enums](src/enums) | enums classes for constant such as Science type, Terrain type etc. |
 | [json](src/json) | classes for JSON data conversion for communication with server |
 | [rover_logic](src/rover_logic) | classes for various rover algorithms |
 | [swarmBots](src/swarmBots) | classes for each Rover instance|
+  
+## Rover Swarm Simulation
+The simulation of rover swarm is consist of 3 major components.
+1. Communication Server - REST API server used as means to exchange information with Rovers
+2. Rover Command Processor (RCP) - control map and UI display also update the map based on command that recieved from rovers
+3. Rovers - contain programs for map exploration and gathering sciences
+
+### Communication
+The communication between each components are:
+1. RCP and Rovers - Socket is used for communication between RCP and Rovers. RCP runs on a specific computer and has a socket that is bound to a specific port number 9537. The server just waits, listening to the socket for Rovers to make a connection request. On the client-side:  The ROVER_XX program will connect to the server on ‘localhost’ ‘port 9537’ as the default. The ROVER_XX program will accept an IP address as a runtime attribute. This will be the address that the rover program will connect to the server instead of localhost should the program have to be run over a network. It will still use port 9537 as the default. ROVER_XX send requests for the services they require to the RCP, and the RCP responds accordingly. Threads are using to  handling these requests. RCP creates a thread for every request it receives from ROVER_XX. The thread is a set of instructions which run differently from the program or other such threads. Using this, RCP can easily multitask well. It can start a thread for a Rover and then continue communicating with other Rovers.
