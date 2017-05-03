@@ -16,8 +16,8 @@ This project is currently arraigned as below
 
 | Package | Source |
 | ------ | ------ |
-| common | [src/common] [PlDb] |
-| controlServer | [plugins/github/README.md] [PlGh] |
+| common | [src/common] (src/common) |
+| controlServer | [plugins/github/README.md] (src/common/) |
 | enums | [plugins/googledrive/README.md] [PlGd] |
 | json | [plugins/onedrive/README.md] [PlOd] |
 | rover_logic | [plugins/medium/README.md] [PlMe] |
