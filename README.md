@@ -16,7 +16,7 @@ This project is currently arraigned as below
 
 | Package | Source |
 | ------ | ------ |
-| common | [plugins/dropbox/README.md] [PlDb] |
+| common | [src/common] [PlDb] |
 | controlServer | [plugins/github/README.md] [PlGh] |
 | enums | [plugins/googledrive/README.md] [PlGd] |
 | json | [plugins/onedrive/README.md] [PlOd] |
