@@ -299,7 +299,98 @@ class MyGUIWorker extends SwingWorker<Void, String> {
 	public void clearDisplay() {
 		myAppendable.clearDisplay();
 	}
+	public void displayGraphicMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap) {
+		int mWidth = planetMap.getWidth();
+		int mHeight = planetMap.getHeight();
 
+		ArrayList<GraphicTile> graphicTiles = new ArrayList<GraphicTile>();
+
+		// make the graphic tiles and place in array
+		for (int j = 0; j < mHeight; j++) {
+			for (int i = 0; i < mWidth; i++) {
+				// scan through the map - left to right, top to bottom
+				Coord tcor = new Coord(i, j);
+				GraphicTile gtile = new GraphicTile(tcor.xpos, tcor.ypos);
+				// first check for a rover and add to graphicTile if found
+				if (roverLoc.containsCoord(tcor)) {
+					String rNum = roverLoc.getName(tcor).toString();
+					// make a tile with rover number
+					gtile.setRoverName(rNum.substring(6));
+					// then check if there is a terrain feature (if not SOIL
+					// then add terrain to graphicTile )
+				}
+				if (planetMap.getTile(tcor).getTerrain() != Terrain.SOIL) {
+					gtile.setTerrain(planetMap.getTile(tcor).getTerrain());
+				}
+				if (sciloc.checkLocation(tcor)) {
+					gtile.setScience(sciloc.scanLocation(tcor));
+				}
+				graphicTiles.add(gtile);
+			}
+		}
+
+		// Load array with target and start location outline lineSegments
+		ArrayList<LineSegment> lineSegmentArrayList = new ArrayList<LineSegment>();
+		int tileSize = GUIdisplay.TILE_SIZE;
+		int boxSize;
+		int minSafePos_x;
+		int maxSafePos_x;
+		int minSafePos_y;
+		int maxSafePos_y;
+		Color boxColor;
+		Coord startPos = planetMap.getStartPosition();
+		int strtPos_x = startPos.xpos;
+		int strtPos_y = startPos.ypos;
+		Coord targetPos = planetMap.getTargetPosition();
+		int targPos_x = targetPos.xpos;
+		int targPos_y = targetPos.ypos;
+		int startOffset = PlanetMap.START_LOCATION_SIZE / 2;
+		int targetOffset = PlanetMap.TARGET_LOCATION_SIZE / 2;
+
+		minSafePos_x = Math.max(strtPos_x - startOffset, 0);
+		maxSafePos_x = Math.min(strtPos_x + startOffset, planetMap.getWidth());
+		minSafePos_y = Math.max(strtPos_y - startOffset, 0);
+		maxSafePos_y = Math.min(strtPos_y + startOffset, planetMap.getHeight());
+		boxSize = PlanetMap.START_LOCATION_SIZE;
+		boxColor = Color.MAGENTA;
+
+		lineSegmentArrayList.add(new LineSegment(minSafePos_x * tileSize, (maxSafePos_x * tileSize) + tileSize,
+				minSafePos_y * tileSize, minSafePos_y * tileSize, boxColor));
+
+		lineSegmentArrayList.add(new LineSegment(minSafePos_x * tileSize, (maxSafePos_x * tileSize) + tileSize,
+				(maxSafePos_y * tileSize) + tileSize, (maxSafePos_y * tileSize) + tileSize, boxColor));
+
+		lineSegmentArrayList.add(new LineSegment(minSafePos_x * tileSize, minSafePos_x * tileSize,
+				minSafePos_y * tileSize, (maxSafePos_y * tileSize) + tileSize, boxColor));
+
+		lineSegmentArrayList
+				.add(new LineSegment((maxSafePos_x * tileSize) + tileSize, (maxSafePos_x * tileSize) + tileSize,
+						minSafePos_y * tileSize, (maxSafePos_y * tileSize) + tileSize, boxColor));
+
+		minSafePos_x = Math.max(targPos_x - targetOffset, 0);
+		maxSafePos_x = Math.min(targPos_x + targetOffset, planetMap.getWidth() - 1);
+		minSafePos_y = Math.max(targPos_y - targetOffset, 0);
+		maxSafePos_y = Math.min(targPos_y + targetOffset, planetMap.getHeight() - 1);
+		boxSize = PlanetMap.TARGET_LOCATION_SIZE;
+		boxColor = Color.RED;
+
+		lineSegmentArrayList.add(new LineSegment(minSafePos_x * tileSize, (maxSafePos_x * tileSize) + tileSize,
+				minSafePos_y * tileSize, minSafePos_y * tileSize, boxColor));
+
+		lineSegmentArrayList.add(new LineSegment(minSafePos_x * tileSize, (maxSafePos_x * tileSize) + tileSize,
+				(maxSafePos_y * tileSize) + tileSize, (maxSafePos_y * tileSize) + tileSize, boxColor));
+
+		lineSegmentArrayList.add(new LineSegment(minSafePos_x * tileSize, minSafePos_x * tileSize,
+				minSafePos_y * tileSize, (maxSafePos_y * tileSize) + tileSize, boxColor));
+
+		lineSegmentArrayList
+				.add(new LineSegment((maxSafePos_x * tileSize) + tileSize, (maxSafePos_x * tileSize) + tileSize,
+						minSafePos_y * tileSize, (maxSafePos_y * tileSize) + tileSize, boxColor));
+
+		myAppendable.drawThisGraphicTileArray(graphicTiles, lineSegmentArrayList);
+	}
+
+/*
 	public void displayGraphicMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap, List<Coord> movingPath) {
 		int mWidth = planetMap.getWidth();
 		int mHeight = planetMap.getHeight();
@@ -394,9 +485,14 @@ class MyGUIWorker extends SwingWorker<Void, String> {
 
 		myAppendable.drawThisGraphicTileArray(graphicTiles, lineSegmentArrayList);
 	}
-
+	/*
+/*
 	public void displayFullMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap, List<Coord> movingPath) {
 		displayGraphicMap(roverLoc, sciloc, planetMap, movingPath);
+	}
+	*/
+	public void displayFullMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap) {
+		displayGraphicMap(roverLoc, sciloc, planetMap);
 	}
 
 	@Override
