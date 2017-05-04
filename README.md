@@ -15,7 +15,7 @@ The Communication Server acts as the link between the Rovers and the Rover Comma
 map on their respective terrain, It also includes the locations of all sciences that have been discovered and communicated by each rover to the communication server and the complete map showing what regions of the map have been explored and the locations which have not been explored yet. 
 
 
-![image of map](./images/initialScan.jpg)
+![image of map](http://i.imgur.com/71sgoFe.jpg)
 
 The java communications class is the interface to the SwarmCommunicationServer nodejs/javascipt program. There are three parameters that we use constantly sue in the communications class, their brief description is shown below:
 
@@ -30,12 +30,12 @@ Since the communications between the rover and the server are all text based, wh
 
 
 ## **_Methods used to send data to the Server_**
-![sending details to the server](./images/sendToServer.JPG)
+![sending details to the server](http://i.imgur.com/4eckWBs.jpg)
 
 <br>
 
 ## **_Methods used to get the data from the Server_**
-![sending details to the server](./images/getFromServer.JPG)
+![sending details to the server](http://i.imgur.com/2LNK8ZK.jpg)
 
 
 
