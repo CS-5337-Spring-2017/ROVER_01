@@ -15,7 +15,7 @@ The Communication Server acts as the link between the Rovers and the Rover Comma
 map on their respective terrain, It also includes the locations of all sciences that have been discovered and communicated by each rover to the communication server and the complete map showing what regions of the map have been explored and the locations which have not been explored yet. 
 
 
-![image of map](http://i.imgur.com/71sgoFe.jpg)
+![initial scan](http://i.imgur.com/71sgoFe.jpg)
 
 The java communications class is the interface to the SwarmCommunicationServer nodejs/javascipt program. There are three parameters that we use constantly sue in the communications class, their brief description is shown below:
 
@@ -35,7 +35,8 @@ Since the communications between the rover and the server are all text based, wh
 <br>
 
 ## **_Methods used to get the data from the Server_**
-![sending details to the server](http://i.imgur.com/2LNK8ZK.jpg)
+![getting details from the server](http://i.imgur.com/2LNK8ZK.jpg)
 
+Once the rover starts exploring the map, it constantly sends the post request to the java communication in order to get the response from the Communication Server with the response of an array of JSON Objects. The rover keeps scanning the tiles and updates the information on what terrain or sciences have been located by the rover and keeps the Communication Server up to date with that information. This information will then be available to different rovers with the request and response messages which is a two way handshake process. All the objects that are located by each rover is also stored in the Communication Server as a JSON Object using the sendRoverDetailJSONDataToServer() method. These changes are also reflected in the console in the form of a basic UI as shown below:
 
-
+![scanned locations](http://i.imgur.com/zd1kNv5.jpg)
