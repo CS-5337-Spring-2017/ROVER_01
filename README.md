@@ -26,7 +26,15 @@ Once the rover starts exploring the map, it constantly sends the post request to
 
 ## **What are the restful API interface commands?**
 
-The restful API commands are pretty much the same commands that we use to send GET and POST requests to the server whenever the rover is either trying to retrieve some information from the server or push the data to the server. That is when we use these commands in the form of a URL and send a request to the server that is sent as a message to the server and the server responds back with a series of string type messages. Usually these messages are considered to be JSON Objects. Let us consider an example, one of the rovers on the planet is trying to get the map details to explore the map it send a GET request to the server using the [GET] [/api/global](/api/global) command in order to send a request to the server to get the next tile location on the map as shown in the picture above. Then the server responds by returning the global as a JSON array through which you can pull the required data from the JSON array. When it comes to sending information like science locations i.e., marking tile for gather etc, to the server then you send POST requests to the server using the [POST] [/api/gather/x/y](/api/gather/x/y) to send the details of the respective rover to the Communication Server. Here the 'x' & 'y' represent the rover coordinates on the map based on the X and Y axis of the map respectively. Few of the major restful API commands and their specifications are described below:
+The restful API commands are pretty much the same commands that we use to send GET and POST requests to the server whenever the rover is either trying to retrieve some information from the server or push the data to the server. That is when we use these commands in the form of a URL and send a request to the server that is sent as a message to the server and the server responds back with a series of string type messages. Usually these messages are considered to be JSON Objects. Let us consider an example, one of the rovers on the planet is trying to get the map details to explore the map it send a GET request to the server using the [GET] [/api/global](/api/global) command in order to send a request to the server to get the next tile location on the map as shown in the picture above. Then the server responds by returning the global as a JSON array through which you can pull the required data from the JSON array. When it comes to sending information like science locations i.e., marking tile for gather etc, to the server then you send POST requests to the server using the [POST] [/api/gather/x/y](/api/gather/x/y) to send the details of the respective rover to the Communication Server. Here the 'x' & 'y' represent the rover coordinates on the map based on the X and Y axis of the map respectively. Again the restful API commands are categorized into different types, they are:
+
+
+![restful API types](http://i.imgur.com/bWIr8D9.jpg)
+
+
+Each of these types have their own set of commands in order to send and receive information through the java communications class which are listed below:
+
+
 
 
 
