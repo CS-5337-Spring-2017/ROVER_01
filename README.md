@@ -39,16 +39,16 @@ Each of these types have their own set of commands in order to send and receive 
     - it contains an array of JSON Objects sent by each active rover on the map or the planet which includes the coordinates of all the active rovers along with their terrain type, science locations, which rover found what type of science and which rover could gather what and returns everything as an array of JSON Objects in the following format:
 
 ```
-[
-  {
-    "x":12,                 // coordinates must be Integers, not String
-    "y":14,                 // ALL CAPS as in enums folder
-    "terrain": "SAND",      // ROCK, SOIL, GRAVEL, SAND, NONE
-    "science": "CRYSTAL",   // RADIOACTIVE, ORGANIC, MINERAL, CRYSTAL, NONE
-    "f": 12                 // Found by Rover 12 (for debugging)
-    "g": 15                 // Marked by Rover 15 for gathering
-  }, ...
-]
+    [
+        {
+            "x":12,                 // coordinates must be Integers, not String
+            "y":14,                 // ALL CAPS as in enums folder
+            "terrain": "SAND",      // ROCK, SOIL, GRAVEL, SAND, NONE
+            "science": "CRYSTAL",   // RADIOACTIVE, ORGANIC, MINERAL, CRYSTAL, NONE
+            "f": 12                 // Found by Rover 12 (for debugging)
+            "g": 15                 // Marked by Rover 15 for gathering
+        }, ...
+    ]
 ```
 
 * [GET] [/api/global](/api/global)
@@ -70,28 +70,62 @@ As shown in the map above there are different types of terrains and science that
 ## Science
 
 * [GET] [/api/science/all](/api/science/all)
-    - sdv
+    - This api is used from the java communication class to the server in order to retrieve all the science locations from the server which also includes the type of terrain on which the science is on. These locations are constantly updated by the rovers whenever they find a new science that is located on the map and is pushed to the server using that specific API request command. The overview of all the objects that are included in the array of JSON Objects is shown below:
+
+```
+    [
+        {
+            "x": 19,
+            "y": 47,
+            "science": "ORGANIC",
+            "terrain": "SOIL",
+            "f": 13,  // found by rover 13
+            "g": 18   // marked by rover 18 for gather
+       } ...
+    ]
+
+```
+
+Each active rover on the map is allocated two different types of tools. One is the scanner where as the other could either be a drill or an excavator. The first one is used to scan the map tiles to find whether there exists any science at that location or not and the latter one is used to harvest that specific tile where the science is located but this is limited only to the rover that can both harvest that tile as well as has the necessary tools to scan the science on that location. There are different types of sciences available all over the map which will be discussed going forward 
 
 * [GET] [/api/science/drill](/api/science/drill)
-    - Shows locations of sciences possible for driller
+    -  This API specifies all the locations of sciences that is possible for the driller to extract. For example, If you have a rover that is a WALKER and has a drill as one of its tools and there's a science on a ROCK Terrain, when you use this API command the locations are popped up on the map so that the rover can go to that location to drill and gather the science out of that terrain. 
 
 * [GET] [/api/science/excavate](/api/science/excavate)
-    - Shows locations of sciences possible for excavater
+    -  This API specifies all the locations of sciences that is possible for the excavator to extract. For example, If you have a rover that is WHEELS and has an excavator as one of its tools and there's a science on a SOIL or GRAVEL Terrain, when you use this API command the locations are popped up on the map so that the rover can go to that location to excavate and gather the science out of that terrain.
 
 ## Gather
 * [POST] [/api/gather/x/y](/api/gather/x/y)
-    - Mark the tile that you are going to gather this science
+    - When the rover is exploring the map and it finds that there's some science next to its locations then it send this information to the server and the server sends a broadcast message to all the other rovers. The rover that is most close to that location will mark that tile as gathering tile by this API by including the rover coordinates based on the a and y axis points of the map. When a rover points the gathering update to a specific location then that specific tile details look like this which includes Header which consists of the ROVER_Name and the Corp-Secret value and the post request with its coordinate value as shown below
+
+```
+        header: 'Rover-Name' : rovername (ie. ROVER_11)
+        header: 'Corp-Secret': corp_secret
+        POST: /api/gather/78/52
+
+        Now the tile looks like this:
+        {
+                "x":78,
+                "y":52,
+                "terrain": "SAND",      // ROCK, SOIL, GRAVEL, SAND, NONE
+                "science": "CRYSTAL",   // RADIOACTIVE, ORGANIC, MINERAL, CRYSTAL, NONE
+                "f": 10                 // Found by Rover 10 (for debugging)
+                "g": 11                 // Marked by Rover 11 for gathering   
+        }
+
+```
+
 
 ## Coordinate
 * [GET] [/api/coord/:x/:y](/api/coord/:x/:y)
-    - Shows the coordinate at specified location
+    - As explained in GATHER API when a rover finds some science but cannot gather it, it sends a GET request to the server using the x and y coordinate locations so that the other rover who is close by can locate it and if possible gather it. 
 
-* [POST] [/api/coord/:x/:y/:science](/api/coord/:x/:y/:science) ** requires corp secret **
-    - Update science information of this coordinate
+* [POST] [/api/coord/:x/:y/:science](/api/coord/:x/:y/:science) 
+    - This API is pretty much the same as the previous one except for that these locations are forwarded by the rovers to the communication server notifying that it has found some science that it is visible to it and updates the science location on the map for the same. These updates can also be seen by the other rovers
 
 ## Miscellaneous
-* [GET] /api/roverinfo
-    - Shows information of the rovers
+* [GET] [/api/roverinfo](/api/roverinfo)
+    - Each and every minute detail about the rover is stored in this API that is all the rover information including the name, id, sensor, tools and the drive system of the rover is stored in this API. 
 
 ## **What is and how does the java communications interface class work?**
 The java communications class is the interface to the SwarmCommunicationServer nodejs/javascipt program. There are three parameters that we use constantly sue in the communications class, their brief description is shown below:
@@ -107,7 +141,7 @@ Since the communications between the rover and the server are all text based, wh
 
 
 ## **_Methods used to send data to the Server_**
-![sending details to the server](http://i.imgur.com/4eckWBs.jpg)
+![sending details to the server](http://i.imgur.com/BSbw8zT.jpg)
 
 <br>
 
