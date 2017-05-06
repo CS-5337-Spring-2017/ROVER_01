@@ -230,7 +230,7 @@ Doing so we can directly create an object in the communication class and call it
 
 Few of the recommendations for the implementations for better functionality of the project will include:
 
-## Simulation
+### **Simulation**
 
 * A central server which has the tendency to locate all kinds of sciences and terrain will be helpful to send the data to the rovers which will also save time for scanning each and every tile on the map for exploring purposes.
 
@@ -238,7 +238,7 @@ Few of the recommendations for the implementations for better functionality of t
 
 * In the original rover mechanisms there's a newer method called "delta differential one-way range measurement" that adds information about the location of the spacecraft in directions perpendicular to the line of sight.
 
-## Hex map vs. Square map
+### **Hex map vs. Square map**
 
 * Using a Hex map in place of a square map will be a little more complicated for the rovers to write the logic when moving to a different location to gather science or tow a different rover, since the rover can move in 6 different directions in place of 4.
 
@@ -247,16 +247,16 @@ Few of the recommendations for the implementations for better functionality of t
 * Yet, there are high chances of falling into a loop where the rover keeps moving in circles in the same location of the map.
 
 
-## Advantages of using Solar Panels alongside Batteries
+### **Advantages of using Solar Panels alongside Batteries**
 
 * Having a battery powered rover alone and having charging stations on a different planet is pointless so, all the rovers have their own type of solar panels which have a prime advantage when they are exploring towards the equatorial region where they can get enough sunlight to re-energize their batteries. 
 
 * To increase the efficiency of the batteries, it is suggested to develop a logic in such a way that whenever the battery is losing its energy, it can move over to the equatorial region of the planet to generate sufficient energy to roam around the unexplored land of the planet
 
-## Limitations
+### **Future Implementations**
+
 * Since the weather of the MARS planet is not known, when there's a dust storm or clouds like entities covering the rover that blocks sunlight then there's no the rover can generate power and travel over the terrain of the planet. This can effect almost all the rovers at a specific time.
 
-## Future Implementations
 * Rovers can carry an additional power source which acts as a power backup in case of emergency power to reach a good sunlight location to recharge.
 
 * Rovers can be configured in such a way that it can recharge another rover if it has more than the minimum amount of power. This can be implemented the same way we have used for the towing process.
