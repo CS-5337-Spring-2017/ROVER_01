@@ -1,5 +1,6 @@
 package common;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,6 +11,7 @@ import enums.RoverMode;
 import enums.RoverToolType;
 import enums.Science;
 import enums.Terrain;
+
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -22,6 +24,11 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Created by samskim on 5/12/16.

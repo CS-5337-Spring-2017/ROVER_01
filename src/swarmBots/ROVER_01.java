@@ -194,6 +194,7 @@ public class ROVER_01 extends Rover {
 			        
 //				System.out.println(rovername + " currentLoc at start: " + currentLoc);
 				
+				System.out.println(currentLoc.xpos + " " + currentLoc.ypos);
 				// after getting location set previous equal current to be able to check for stuckness and blocked later
 				previousLoc = currentLoc;		
 				
