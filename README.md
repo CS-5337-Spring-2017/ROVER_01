@@ -160,3 +160,7 @@ In order to increase the potential of the program it is best to use the "Divide 
 <p align="center"><img src="http://i.imgur.com/EYcns25.jpg"></p>
 
 As shown above status has three different definitions namely open, pending and done which is basically given as the parameters to a map tile which adds an additional JSON object called status. Each value of this JSON Object defines a different meaning to the status value which is shown below:
+
+![status_description](http://i.imgur.com/u7E5e6B.jpg)
+
+Now in the future version if there is any hidden trap and the rover has fallen into this trap then the rover sends a message to the server with a new JSON object which can be a boolean value which changes to true if stuck else it remains falls. If all the active rovers in the map are given the capacity to have a towing tool then we can apply the same logic that we have used for mapping the status of the tile for gather logic to the rover towing when stuck in a hidden trap that the rover is not aware of. For us to do that in a much simple way where the complexity of the logic is as minimum as possible we can use the highlighted path logic for the rovers current location to the destination where the rover is stuck because this highlighted path cannot pass through the obstacles until and the unless the rover has the tendency to go over that terrain type. Once the rover reaches the other rover that is trapped in the hidden trap then it can use the towing logic to pull the rover out of that trap. 
