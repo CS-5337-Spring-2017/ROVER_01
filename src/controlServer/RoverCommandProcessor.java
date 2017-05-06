@@ -10,17 +10,22 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Map.Entry;
 
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import org.json.simple.JSONObject;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import common.Communication;
 import common.Coord;
 import common.MapTile;
 import common.PlanetMap;
@@ -65,6 +70,8 @@ public class RoverCommandProcessor {
     private static ArrayList<String> connectedRovers = new ArrayList<String>();
     private static HashMap<String, RoverStats> listOfRovers = new HashMap<String, RoverStats>();
     
+    private static ArrayList<Coord> movingPathCoords = new ArrayList<>();
+    private static Coord currentLocation;
     
     private static long countdownTimer;
     private static boolean roversAreGO;
@@ -73,7 +80,7 @@ public class RoverCommandProcessor {
 	static MyGUIWorker myWorker;
     
 	// Length of time allowed for the rovers to get back to the retrieval zone
-	static final int MAXIMUM_ACTIVITY_TIME_LIMIT = 300000; // 10 Minutes = 600,000, 5 Minutes = 300,000
+	static final int MAXIMUM_ACTIVITY_TIME_LIMIT = 300_000; // 10 Minutes = 600,000, 5 Minutes = 300,000
 	static Timer countDownTimer;
 	static long startTime;
 	
@@ -128,8 +135,12 @@ public class RoverCommandProcessor {
         countdownTimer = System.currentTimeMillis();
 		
 		mainPanel = new GUIdisplay(mapWidth, mapHeight, MAXIMUM_ACTIVITY_TIME_LIMIT);
+		
 		myWorker = new MyGUIWorker(mainPanel);
 		
+		
+
+        
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -184,6 +195,8 @@ public class RoverCommandProcessor {
          * Then runs the Rover Command Process simulator server        
          */
         public void run() {
+        	String url = "http://localhost:3000/api";
+            String corp_secret = "gz5YhL70a2";
             try {
                 // Create character streams for the socket.
                 inFromRover = new BufferedReader(new InputStreamReader(
@@ -209,6 +222,8 @@ public class RoverCommandProcessor {
                 
                 // make and instantiate a Rover object connected to this thread if one does not exist
                 RoverStats rover;
+                // to connect to server and get all rover locations
+                Communication com;
                 if(listOfRovers.containsKey(roverNameString)){
                 	rover = listOfRovers.get(roverNameString);
                 } else {                	
@@ -217,6 +232,8 @@ public class RoverCommandProcessor {
   	                listOfRovers.put(roverNameString, rover);
                 }
                 
+    	    	com = new Communication(url, rover.getRoverName().toString(), corp_secret);
+
 
                 // ##### Run the Rover Control Processor server #####
                 while (roversAreGO) {	
@@ -241,15 +258,26 @@ public class RoverCommandProcessor {
                     // debug checking
                     //System.out.println("SWARM_SERVER_"+roverNameString+ "_thread: recieved command " + input);
                     
-                      
+                     
+                   
+                    
                     
                     /**
                 	 * ******************** MOVE **********************
                 	 */                   
                     if (input.startsWith("MOVE")){
+                    	System.out.println("IN MOVESSSSSSSSSSSS: ");
+                    	String rawMoves = input.substring(7);
+                    	String [] movingPath = rawMoves.split("\\s+");
+                    	movingPathCoords = getPathCoordinates(movingPath);
+                    	System.out.println("Current loc: " + currentLocation.getXpos() + ":" + currentLocation.getYpos());
+                    	for(Coord c: movingPathCoords){
+                    		System.out.println(c.getXpos() + ":" + c.getYpos());
+                    	}
+
                     	//System.out.println("SWARM: ------ MOVE ------"); //debug test input parsing
                     	// trim header off of input string
-                    	String dir = input.substring(5);	
+                    	String dir = input.substring(5, 6);	
                     	
                     	// invoke the doMove method to update the Rover position in the RoverLocations (roverLocations) static object
                     	// this method also returns a Coord with the Rover position after the move attempt.
@@ -257,6 +285,9 @@ public class RoverCommandProcessor {
                     	
                     	// Update the GUI display with all the new rover locations when any individual rover moves
             	    	updateGUIDisplay();
+            	    
+                    	
+            	    	locationsDisplayUpdate(com.getRoverLocations());
                     	
             	    	
                     
@@ -264,13 +295,22 @@ public class RoverCommandProcessor {
                 	 * ******************** LOC **********************
                 	 */
                     // gets the current position of the rover	
-                    } else if (input.startsWith("LOC")){  
+                    } else if (input.startsWith("LOC")){
+
+                    	
                     	//System.out.println("SWARM: ------ LOC ------"); //debug test input parsing
                     	// does not need to synchronize-lock scienceLocations because not changing any values
-            	    	Coord roverPos = roverLocations.getLocation(rover.getRoverName());
-            	    	xpos = roverPos.xpos;
-            	    	ypos = roverPos.ypos;
+            	    	currentLocation = roverLocations.getLocation(rover.getRoverName());
+            	    	
+            	    	xpos = currentLocation.xpos;
+            	    	ypos = currentLocation.ypos;
                     	outToRover.println("LOC " + xpos + " " + ypos);
+//                    	System.err.println("LOCATION " + xpos + " " + ypos);
+//                    	roverLocations.printRovers();
+//                    	System.err.println("LOCATION " + xpos + " " + ypos);
+                    	
+                    	
+                    	
                     	
                     
                     	
@@ -797,11 +837,15 @@ public class RoverCommandProcessor {
 	}
     
 	static void updateGUIDisplay() throws Exception{
-		myWorker.displayFullMap(roverLocations.clone(), scienceLocations, planetMap);
+		myWorker.displayFullMap(roverLocations.clone(), scienceLocations, planetMap, movingPathCoords);
 	}
 	
 	static void scoreDisplayUpdate() throws Exception{
 		myWorker.displayScore(corpCollectedScience);
+	}
+	
+	static void locationsDisplayUpdate(JSONObject obj) throws Exception{
+		myWorker.displayLocations(obj);
 	}
 	
 	static void stopRoverAreGO(){
@@ -826,6 +870,33 @@ public class RoverCommandProcessor {
 			tnum = 2;
 		} 
 		return tnum;
+	}
+	
+	private static ArrayList<Coord> getPathCoordinates(String [] movingPath){
+		ArrayList<Coord> pathCoords = new ArrayList<>();
+		Coord currentCoord = currentLocation;
+		for(String move: movingPath){
+			int x = currentCoord.getXpos();
+			int y = currentCoord.getYpos();
+			
+			if(move.equals("E")){
+				currentCoord = new Coord(x +1, y);
+				pathCoords.add(currentCoord);
+			}
+			else if(move.equals("W")){
+				currentCoord =new Coord(x -1, y);
+				pathCoords.add(currentCoord);
+			}
+			else if(move.equals("N")){
+				currentCoord = new Coord(x, y -1);
+				pathCoords.add(currentCoord);
+			}
+			else{
+				currentCoord =new Coord(x, y +1);
+				pathCoords.add(currentCoord);
+			}
+		}
+		return pathCoords;
 	}
 }
 

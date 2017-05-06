@@ -1,6 +1,5 @@
 package common;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Coord {
@@ -17,6 +16,14 @@ public class Coord {
 	public Coord(int x, int y){
 		this.xpos = x;
 		this.ypos = y;
+	}
+	
+	public int getXpos(){
+		return this.xpos;
+	}
+	
+	public int getYpos(){
+		return this.ypos;
 	}
 	
     @Override

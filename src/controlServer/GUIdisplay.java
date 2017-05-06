@@ -18,6 +18,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
+import org.json.simple.JSONObject;
 
 import UI_support.GraphicTile;
 import UI_support.LineSegment;
@@ -45,6 +48,8 @@ public class GUIdisplay extends JPanel implements MyGUIAppendable {
 	private JTextField blueScoreTextArea;
 	private JTextField greenScoreTextArea;
 	private JTextField sampleScoreTextArea;
+	private JTextArea locationsTextArea;
+
 
 	private Color EXTRA_LIGHT_GREY = new Color(220, 220, 220);
 
@@ -60,6 +65,19 @@ public class GUIdisplay extends JPanel implements MyGUIAppendable {
 		lineSegments = new ArrayList<>();
 		countDownClock(timeLimit);
 		displayScoreTextInit();
+		displayLocationsTextInit();
+	}
+	
+	private void displayLocationsTextInit() {
+		locationsTextArea = new JTextArea();
+		locationsTextArea.setLineWrap(true);
+		locationsTextArea.setWrapStyleWord(true);
+		locationsTextArea.setFont(new Font("sansserif", Font.PLAIN, FONT_SIZE));
+		locationsTextArea.setBackground(Color.YELLOW);
+		locationsTextArea.setBorder(null);
+		locationsTextArea.setEditable(false);
+		locationsTextArea.setForeground(Color.BLACK);
+		locationsTextArea.setText("LOCATIONS: ");
 	}
 
 	private void displayScoreTextInit() {
@@ -153,6 +171,15 @@ public class GUIdisplay extends JPanel implements MyGUIAppendable {
 		greenScoreTextArea.setText("GREEN: " + scoreGreen);
 		sampleScoreTextArea.setText("SAMPLE: " + scoreSample);
 	}
+	
+	@Override
+	public void setLocations(String locations) {
+		// TODO Auto-generated method stub
+		System.out.println(locations);
+		
+	
+		locationsTextArea.setText(locations);
+	}
 
 	@Override
 	public void drawThisGraphicTileArray(ArrayList<GraphicTile> gtarraylist,
@@ -172,6 +199,8 @@ public class GUIdisplay extends JPanel implements MyGUIAppendable {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		for (GraphicTile graphicTile : graphicTiles) {
+//			g.setColor(Color.GREEN);
+//			g.fillRect(graphicTile.getX() *TILE_SIZE, graphicTile.getY() *TILE_SIZE, TILE_SIZE, TILE_SIZE);
 			graphicTile.drawTile(g);
 		}
 		g.setColor(EXTRA_LIGHT_GREY);
@@ -212,6 +241,7 @@ public class GUIdisplay extends JPanel implements MyGUIAppendable {
 		container.add(blueScoreTextArea);
 		container.add(greenScoreTextArea);
 		container.add(sampleScoreTextArea);
+		container.add(locationsTextArea);
 		container.add(emptyPanel);
 
 		container.setPreferredSize(new Dimension(160, 50));
@@ -270,7 +300,7 @@ class MyGUIWorker extends SwingWorker<Void, String> {
 		myAppendable.clearDisplay();
 	}
 
-	public void displayGraphicMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap) {
+	public void displayGraphicMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap, List<Coord> movingPath) {
 		int mWidth = planetMap.getWidth();
 		int mHeight = planetMap.getHeight();
 
@@ -295,6 +325,10 @@ class MyGUIWorker extends SwingWorker<Void, String> {
 				}
 				if (sciloc.checkLocation(tcor)) {
 					gtile.setScience(sciloc.scanLocation(tcor));
+				}
+				//check if the tile is part of moving path to be highlighted
+				if(movingPath.contains(tcor)){
+					gtile.setPartOfPath(true);
 				}
 				graphicTiles.add(gtile);
 			}
@@ -361,8 +395,8 @@ class MyGUIWorker extends SwingWorker<Void, String> {
 		myAppendable.drawThisGraphicTileArray(graphicTiles, lineSegmentArrayList);
 	}
 
-	public void displayFullMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap) {
-		displayGraphicMap(roverLoc, sciloc, planetMap);
+	public void displayFullMap(RoverLocations roverLoc, ScienceLocations sciloc, PlanetMap planetMap, List<Coord> movingPath) {
+		displayGraphicMap(roverLoc, sciloc, planetMap, movingPath);
 	}
 
 	@Override
@@ -378,6 +412,17 @@ class MyGUIWorker extends SwingWorker<Void, String> {
 		String tempSampleScore = Integer.toString(corpCollectedScience.get(0).size());
 		myAppendable.setScores(tempBlueScore, tempGreenScore, tempSampleScore);
 	}
+	
+	public void displayLocations(JSONObject obj){	
+		String text = "   LOCATIONS\n---------------\n";
+		for(Object key: obj.keySet()){
+//			System.out.println("Key: " + key);
+			text+= key.toString() + ": " + obj.get(key) + "\n\n";
+		}
+		System.out.println(text);
+		myAppendable.setLocations(text);
+		
+	}
 }
 
 interface MyGUIAppendable {
@@ -391,5 +436,8 @@ interface MyGUIAppendable {
 	public void clearDisplay();
 
 	public void setScores(String scoreBlue, String scoreGreen, String scoreSample);
+	
+	public void setLocations(String locations);
+	
 
 }
