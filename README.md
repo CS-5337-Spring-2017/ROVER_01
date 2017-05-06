@@ -152,10 +152,22 @@ All the above specified restful API commands are used in the java communications
 
 ## **What are the interface API commands and how are they used?**
 
-## **What is the design philosophy behind the inter-rover communication tools?**
 
 ## **What are some recommendations for different ways in which the rovers can negotiate duties such as mapping or harvesting?**
-In order to increase the potential of the program it is best to use the "Divide and Rule" policy where each rover is assigned a different job to do. Let us say we have 3 rovers (walkers, wheels and treads) roaming around the planet. Instead of the rovers being all over the place we can distribute different duties to each rover like the wheels are the fastest rovers on the map so it will be advantageous for it to explore the map and update different locations of the map constantly. Doing so the other rovers can focus on which place they want to go and since not all rovers can move over all types of terrains, the treads which are a little slower than the wheels can go over the terrains Sand, Soil and Gravel whereas the walkers which are the slowest of all the rovers can travel over Soil, Gravel and Rocks but get stuck upon entering the Sand Terrain and the wheels get stuck as soon as they enter the sand terrain so it is best for the Treads rover to find the type of surrounding that are on different locations of the map. Once we have the map locations with what type of terrain is there at which location each of the rovers can the do their own will of harvesting sciences. But, how do they do it when each of the rover is travelling in a different location and what would be the worst case scenario where the rover is in a location where it sees something but it cannot extract it. This is when we can use the API's to communicate with the server and MAP the location to the server to communicate with the other rovers saying "Hey I found something over here, it's open for Harvesting". Doing so, any rover that is close to that location can change the status of going to that location and harvesting the tile to pending. So, each map tile that has some sort of science will have some sort of data which also gives information about the status of the tile as explained below.
+In order to increase the potential of the program it is best to use the "Divide and Rule" policy where each rover is assigned a different job to do. Let us say we have 3 rovers (walkers, wheels and treads) roaming around the planet. Instead of the rovers being all over the place we can distribute different duties to each rover like the wheels are the fastest rovers on the map so it will be advantageous for it to explore the map and update different locations of the map constantly. Doing so the other rovers can focus on which place they want to go and since not all rovers can move over all types of terrains, the treads which are a little slower than the wheels can go over the terrains Sand, Soil and Gravel whereas the walkers which are the slowest of all the rovers can travel over Soil, Gravel and Rocks but get stuck upon entering the Sand Terrain and the wheels get stuck as soon as they enter the sand terrain so it is best for the Treads rover to find the type of surrounding that are on different locations of the map. Once we have the map locations with what type of terrain is there at which location each of the rovers can the do their own will of harvesting sciences. But, how do they do it when each of the rover is travelling in a different location and what would be the worst case scenario where the rover is in a location where it sees something but it cannot extract it. This is when we can use the API's to communicate with the server and MAP the location to the server to communicate with the other rovers saying "Hey I found something over here, it's open for Harvesting". 
+
+The image below shows that ROVER_02 has found something but can't harvest it and changes the tiles status to open for harvest.
+![found something](http://i.imgur.com/Y8Q164T.jpg)
+
+Other rovers let us take ROVER_05 being the closest is trailing upon a different science location since it's status is pending so it sends a message to the Communication Server that it is already going to get a science from a different location.
+
+![pending to harvest something else on the map](http://i.imgur.com/WENrwR0.jpg)
+
+Then ROVER_01 being the next closest ROVER to the science location sends a message to the Communication Server saying hey I'm open for gathering and then changes it's status from open to pending harvest with the tile coordinates as the destination and highlights the path to it. 
+
+![open for gathering science](http://i.imgur.com/8r6HCWe.jpg)
+
+Doing so, any rover that is close to that location can change the status of going to that location and harvesting the tile to pending. So, each map tile that has some sort of science will have some sort of data which also gives information about the status of the tile as explained below.
 
 <p align="center"><img src="http://i.imgur.com/EYcns25.jpg"></p>
 
@@ -178,10 +190,48 @@ Now in the future version if there is any hidden trap and the rover has fallen i
 ]
 ```
 
+![stuck on hidden trap](http://i.imgur.com/OdnMkb6.jpg)
+
+
 ## **How can additional commands and functions be added to the Communications Server and accessed or utilized by the rovers?**
 
 * Instead of applying different logics by the rovers to calculate the distance between the rovers and the sciences on the map for gathering sciences, it will be really helpful if such function is available from the server side to calculate the distance between all the rovers and the science that has been found by some other rover. 
 
-* The highlighted path logic can be directly implementing the highlighted path logic into the server with necessary parameters passed to the function that are color coordinated to each different rover will give a clear user interface to the viewer as to which rover is going towards which direction or tile location. This function will also reduce the chances of rovers colliding with each other
+* The highlighted path logic can be directly implementing the highlighted path logic into the server with necessary parameters passed to the function that are color coordinated to each different rover will give a clear user interface to the viewer as to which rover is going towards which direction or tile location. This function will also reduce the chances of rovers colliding with each other. 
+
+* Declaring API commands in app.js and create a HTTP Connection on rover side to call those commands. For example let us consider the following code to be written in the communication class
+
+```
+readScienceDetailJSONDataFromServer(){
+    ....
+     obj = new URL(url + "/science/all/");
+    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+    ....
+}
+
+```
+and use the following commands in javascript
+
+```
+ app.get('/api/science/:option', function (req, res)  
+
+```
+Doing so we can directly create an object in the communication class and call its method to get the location of all the sciences in the map
+
+```
+(ScienceDetail[] scienceDetails = communication
+               .getAllScienceDetails();)
+
+```
+![Highlighted path](http://i.imgur.com/sF4OGsN.jpg)
+
+* The above shown image is as of now only limited to a single rover since all the rovers were to create their own RoverCommandProcessor initially. So if this kind of logic is directly used in the RoverCommandProcessor for all the rovers many loopholes can be covered like running into rovers or getting stuck in an unknown land or even bumping into walls if the rover logic is implemented the correct way.
+ 
 
 ## **Make some recommendations on how to improve the implementation of the project. Make some recommendations on additional features and functions to add to the simulation such as, liquid terrain features, hex vs. square map tiles, power limitations (solar, battery, etc.), towing, chance of break downs, etc.**
+
+Few of the recommendations for the implementations for better functionality of the project will include:
+
+* A central server which has the tendency to locate all kinds of sciences and terrain will be helpful to send the data to the rovers which will also save time for scanning each and every tile on the map for exploring purposes.
+
+* 
