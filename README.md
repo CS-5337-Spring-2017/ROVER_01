@@ -163,4 +163,25 @@ As shown above status has three different definitions namely open, pending and d
 
 ![status_description](http://i.imgur.com/u7E5e6B.jpg)
 
-Now in the future version if there is any hidden trap and the rover has fallen into this trap then the rover sends a message to the server with a new JSON object which can be a boolean value which changes to true if stuck else it remains falls. If all the active rovers in the map are given the capacity to have a towing tool then we can apply the same logic that we have used for mapping the status of the tile for gather logic to the rover towing when stuck in a hidden trap that the rover is not aware of. For us to do that in a much simple way where the complexity of the logic is as minimum as possible we can use the highlighted path logic for the rovers current location to the destination where the rover is stuck because this highlighted path cannot pass through the obstacles until and the unless the rover has the tendency to go over that terrain type. Once the rover reaches the other rover that is trapped in the hidden trap then it can use the towing logic to pull the rover out of that trap. 
+Now in the future version if there is any hidden trap and the rover has fallen into this trap then the rover sends a message to the server with a new JSON object which can be a boolean value which changes to true if stuck else it remains falls. If all the active rovers in the map are given the capacity to have a towing tool then we can apply the same logic that we have used for mapping the status of the tile for gather logic to the rover towing when stuck in a hidden trap that the rover is not aware of. For us to do that in a much simple way where the complexity of the logic is as minimum as possible we can use the highlighted path logic for the rovers current location to the destination where the rover is stuck because this highlighted path cannot pass through the obstacles until and the unless the rover has the tendency to go over that terrain type. Once the rover reaches the other rover that is trapped in the hidden trap then it can use the towing logic to pull the rover out of that trap. Below is the example on how the JSON values look like for the hidden trap and trapped rovers that need to be towed out. 
+
+```
+[
+  {
+      rs: 4                 // Rover Stuck is 4
+      trapped: true,        // Rover is trapped? yes
+      x: 27,                // x coordinate
+      y: 8,                 // y coordinate
+      terrain: "HIDDEN",    // terrain type
+      tb: 3                 // towed by Rover 3
+  }
+]
+```
+
+## **How can additional commands and functions be added to the Communications Server and accessed or utilized by the rovers?**
+
+* Instead of applying different logics by the rovers to calculate the distance between the rovers and the sciences on the map for gathering sciences, it will be really helpful if such function is available from the server side to calculate the distance between all the rovers and the science that has been found by some other rover. 
+
+* The highlighted path logic can be directly implementing the highlighted path logic into the server with necessary parameters passed to the function that are color coordinated to each different rover will give a clear user interface to the viewer as to which rover is going towards which direction or tile location. This function will also reduce the chances of rovers colliding with each other
+
+## **Make some recommendations on how to improve the implementation of the project. Make some recommendations on additional features and functions to add to the simulation such as, liquid terrain features, hex vs. square map tiles, power limitations (solar, battery, etc.), towing, chance of break downs, etc.**
